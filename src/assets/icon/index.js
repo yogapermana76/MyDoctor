@@ -1,3 +1,3 @@
-import IconBackDart from './ic-back-dark.svg';
+import IconBackDark from './ic-back-dark.svg';
 
-export {IconBackDart};
+export {IconBackDark};
