@@ -5,7 +5,7 @@ import { fonts, colors } from '../../utils'
 import { ScrollView } from 'react-native-gesture-handler'
 import { JSONCategoryDoctor } from '../../assets'
 
-const Doctor = () => {
+const Doctor = ({navigation}) => {
   return (
     <View style={styles.page}>
       <View style={styles.content}>
@@ -23,6 +23,7 @@ const Doctor = () => {
                   <DoctorCategory
                     key={item.id}
                     category={item.category}
+                    onPress={() => navigation.navigate('ChooseDoctor')}
                   />
                 ))}
                 <Gap width={22} />

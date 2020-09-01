@@ -9,7 +9,8 @@ import {
   UploadPhoto,
   Doctor,
   Messages,
-  Hospitals
+  Hospitals,
+  ChooseDoctor
 } from '../pages';
 import { BottomNavigator } from '../components';
 
@@ -57,6 +58,11 @@ const Router = () => {
       <Stack.Screen
         name="MainApp"
         component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ChooseDoctor"
+        component={ChooseDoctor}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
