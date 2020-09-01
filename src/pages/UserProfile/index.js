@@ -10,10 +10,31 @@ const UserProfile = ({navigation}) => {
       <Gap height={40} />
       <Profile />
       <Gap height={14} />
-      <List name="Edit Profile" desc="Last Update Yesterday" type="next" icon="edit-profile" />
-      <List name="Language" desc="Available 12 Languages" type="next" icon="language" />
-      <List name="Give Us Rate" desc="On Google Play Store" type="next" icon="rate" />
-      <List name="Help Center" desc="Read Our Guidelines" type="next" icon="help" />
+      <List
+        name="Edit Profile"
+        desc="Last Update Yesterday"
+        type="next"
+        icon="edit-profile"
+        onPress={() => navigation.navigate('UpdateProfile')}
+      />
+      <List
+        name="Language"
+        desc="Available 12 Languages"
+        type="next"
+        icon="language"
+      />
+      <List
+        name="Give Us Rate"
+        desc="On Google Play Store"
+        type="next"
+        icon="rate"
+      />
+      <List
+        name="Help Center"
+        desc="Read Our Guidelines"
+        type="next"
+        icon="help"
+      />
     </View>
   )
 }
