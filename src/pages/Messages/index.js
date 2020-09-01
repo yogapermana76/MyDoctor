@@ -1,16 +1,28 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { ListDoctor } from '../../components'
+import { List } from '../../components'
 import { colors, fonts } from '../../utils'
+import { DummyDoctor1 } from '../../assets'
 
 const Messages = () => {
   return (
     <View style={styles.page}>
       <View style={styles.content}>
         <Text style={styles.title}>Messages</Text>
-        <ListDoctor />
-        <ListDoctor />
-        <ListDoctor />
+        <List
+          profile={DummyDoctor1}
+          name="Alexander Jannie"
+          desc="Male"
+        />
+        <List
+          profile={DummyDoctor1}
+          name="Alexander Jannie"
+          desc="Male"/>
+        <List
+          profile={DummyDoctor1}
+          name="Alexander Jannie"
+          desc="Male"
+        />
       </View>
     </View>
   )
