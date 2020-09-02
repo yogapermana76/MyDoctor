@@ -1,19 +1,41 @@
-import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import ImagePicker from 'react-native-image-picker'
+import { showMessage } from 'react-native-flash-message'
 import { Header, Button, Link, Gap } from '../../components'
-import { ILNullPhoto, IconAddPhoto } from '../../assets'
+import { ILNullPhoto, IconAddPhoto, IconRemovePhoto } from '../../assets'
 import { colors, fonts } from '../../utils'
 
 const UploadFoto = ({navigation}) => {
+  const [hasPhoto, setHasPhoto] = useState(false)
+  const [photo, setPhoto] = useState(ILNullPhoto)
+  const getImage = () => {
+    ImagePicker.showImagePicker({}, (response) => {
+      console.log('Response = ', response);
+      if (response.didCancel || response.error) {
+        showMessage({
+          message: 'ooops, sepertinya anda tidak memilih fotonya?',
+          type: 'default',
+          backgroundColor: colors.error,
+          color: colors.white
+        })
+      } else {
+        const source = { uri: response.uri }
+        setPhoto(source)
+        setHasPhoto(true)
+      }
+    })
+  }
+
   return (
     <View style={styles.page}>
       <Header title="Upload Photo" onPress={() => navigation.goBack()} />
       <View style={styles.content}>
         <View style={styles.profile}>
-          <View style={styles.avatarWrapper}>
-            <Image source={ILNullPhoto} style={styles.avatar} />
-            <IconAddPhoto style={styles.addPhoto} />
-          </View>
+          <TouchableOpacity style={styles.avatarWrapper} onPress={getImage}>
+            <Image source={photo} style={styles.avatar} />
+            {hasPhoto ? <IconRemovePhoto style={styles.addPhoto} /> : <IconAddPhoto style={styles.addPhoto} />}
+          </TouchableOpacity>
           <Text style={styles.name}>Shayna Melinda</Text>
           <Text style={styles.profession}>Product Designer</Text>
         </View>
@@ -21,6 +43,7 @@ const UploadFoto = ({navigation}) => {
           <Button
             title="Upload and Continue"
             onPress={() => navigation.replace('MainApp')}
+            disable={!hasPhoto}
           />
           <Gap height={30} />
           <Link
@@ -53,7 +76,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   avatar: {
-    width: 110, height: 110
+    width: 110,
+    height: 110,
+    borderRadius: 110 / 2
   },
   avatarWrapper: {
     width: 130,
