@@ -2,11 +2,19 @@ import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ILLogo} from '../../assets';
 import { colors } from '../../utils';
+import { FireBase } from '../../config';
 
 const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('GetStarted')
+      FireBase.auth()
+        .onAuthStateChanged(user => {
+          if (user) {
+            navigation.replace('MainApp')
+          } else {
+            navigation.replace('GetStarted')
+          }
+        })
     }, 3000)
   }, [navigation])
   return (

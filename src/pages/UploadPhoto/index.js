@@ -7,7 +7,7 @@ import { ILNullPhoto, IconAddPhoto, IconRemovePhoto } from '../../assets'
 import { colors, fonts, storeData } from '../../utils'
 import { FireBase } from '../../config'
 
-const UploadFoto = ({navigation, route}) => {
+const UploadPhoto = ({navigation, route}) => {
   const { fullName, profession, uid } = route.params
   const [hasPhoto, setHasPhoto] = useState(false)
   const [photo, setPhoto] = useState(ILNullPhoto)
@@ -39,7 +39,7 @@ const UploadFoto = ({navigation, route}) => {
   const uploadAndContinue = () => {
     FireBase.database()
       .ref(`users/${uid}/`)
-      .update({foto: photoForDB})
+      .update({photo: photoForDB})
 
     const data = route.params
     data.photo = photoForDB
@@ -78,7 +78,7 @@ const UploadFoto = ({navigation, route}) => {
   )
 }
 
-export default UploadFoto
+export default UploadPhoto
 
 const styles = StyleSheet.create({
   page: {
