@@ -4,7 +4,7 @@ import ImagePicker from 'react-native-image-picker'
 import { showMessage } from 'react-native-flash-message'
 import { Header, Button, Link, Gap } from '../../components'
 import { ILNullPhoto, IconAddPhoto, IconRemovePhoto } from '../../assets'
-import { colors, fonts } from '../../utils'
+import { colors, fonts, storeData } from '../../utils'
 import { FireBase } from '../../config'
 
 const UploadFoto = ({navigation, route}) => {
@@ -14,7 +14,12 @@ const UploadFoto = ({navigation, route}) => {
   const [photoForDB, setPhotoForDB] = useState('')
 
   const getImage = () => {
-    ImagePicker.showImagePicker({}, (response) => {
+    const option = {
+      quality: 0.5,
+      maxWidth: 200,
+      maxHeight: 200
+    }
+    ImagePicker.showImagePicker(option, (response) => {
       if (response.didCancel || response.error) {
         showMessage({
           message: 'ooops, sepertinya anda tidak memilih fotonya?',
@@ -35,6 +40,11 @@ const UploadFoto = ({navigation, route}) => {
     FireBase.database()
       .ref(`users/${uid}/`)
       .update({foto: photoForDB})
+
+    const data = route.params
+    data.photo = photoForDB
+    storeData('user', data)
+
     navigation.replace('MainApp')
   }
 
@@ -109,13 +119,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: colors.text.primary,
     fontFamily: fonts.primary[600],
-    textAlign: 'center'
+    textAlign: 'center',
+    textTransform: 'capitalize'
   },
   profession: {
     fontSize: 18,
     fontFamily: fonts.primary.normal,
     textAlign: 'center',
     color: colors.text.secondary,
-    marginTop: 4
+    marginTop: 4,
+    textTransform: 'capitalize'
   }
 })
