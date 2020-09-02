@@ -20,9 +20,17 @@ const Register = ({navigation}) => {
     FireBase.auth()
       .createUserWithEmailAndPassword(form.email, form.password)
       .then(success => {
-        setForm('reset')
         setLoading(false)
-        console.log(success, 'register success')
+        setForm('reset')
+        const data = {
+          fullName: form.fullName,
+          profession: form.profession,
+          email: form.email
+        }
+
+        FireBase.database()
+          .ref(`users/${success.user.uid}/`)
+          .set(data)
       })
       .catch(error => {
         const errorMessage = error.message;
