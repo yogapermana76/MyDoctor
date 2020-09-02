@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
+import { showMessage } from "react-native-flash-message";
 import { Header, Input, Button, Gap, Loading } from '../../components';
 import { colors, useForm } from '../../utils';
 import { FireBase } from '../../config';
@@ -15,7 +16,6 @@ const Register = ({navigation}) => {
   const [loading, setLoading] = useState(false)
 
   const onContinue = () => {
-    // navigation.navigate('UploadPhoto')
     setLoading(true)
     FireBase.auth()
       .createUserWithEmailAndPassword(form.email, form.password)
@@ -27,7 +27,12 @@ const Register = ({navigation}) => {
       .catch(error => {
         const errorMessage = error.message;
         setLoading(false)
-        console.log(errorMessage, 'register error')
+        showMessage({
+          message: errorMessage,
+          type: 'default',
+          backgroundColor: colors.error,
+          color: colors.white
+        });
       });
   }
 
