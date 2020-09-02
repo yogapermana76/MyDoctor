@@ -5,11 +5,14 @@ import { showMessage } from 'react-native-flash-message'
 import { Header, Button, Link, Gap } from '../../components'
 import { ILNullPhoto, IconAddPhoto, IconRemovePhoto } from '../../assets'
 import { colors, fonts } from '../../utils'
+import { FireBase } from '../../config'
 
 const UploadFoto = ({navigation, route}) => {
-  const { fullName, profession } = route.params
+  const { fullName, profession, uid } = route.params
   const [hasPhoto, setHasPhoto] = useState(false)
   const [photo, setPhoto] = useState(ILNullPhoto)
+  const [photoForDB, setPhotoForDB] = useState('')
+
   const getImage = () => {
     ImagePicker.showImagePicker({}, (response) => {
       if (response.didCancel || response.error) {
@@ -21,10 +24,18 @@ const UploadFoto = ({navigation, route}) => {
         })
       } else {
         const source = { uri: response.uri }
+        setPhotoForDB(`data:${response.type};base64, ${response.data}`)
         setPhoto(source)
         setHasPhoto(true)
       }
     })
+  }
+  
+  const uploadAndContinue = () => {
+    FireBase.database()
+      .ref(`users/${uid}/`)
+      .update({foto: photoForDB})
+    navigation.replace('MainApp')
   }
 
   return (
@@ -42,7 +53,7 @@ const UploadFoto = ({navigation, route}) => {
         <View>
           <Button
             title="Upload and Continue"
-            onPress={() => navigation.replace('MainApp')}
+            onPress={uploadAndContinue}
             disable={!hasPhoto}
           />
           <Gap height={30} />
