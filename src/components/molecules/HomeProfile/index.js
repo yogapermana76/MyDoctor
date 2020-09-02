@@ -12,8 +12,8 @@ const HomeProfile = ({onPress}) => {
   useEffect(() => {
     getData('user').then(res => {
       const data = res
-      data.photo = { uri: data.photo }
-      setProfile(res)
+      data.photo = { uri: res.photo }
+      setProfile(data)
     })
   }, [])
 

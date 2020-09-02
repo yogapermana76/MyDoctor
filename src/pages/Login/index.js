@@ -20,7 +20,6 @@ const Login = ({ navigation }) => {
           .ref(`users/${res.user.uid}/`)
           .once('value')
           .then(resDB => {
-            console.log(resDB.val())
             if (resDB.val()) {
               storeData('user', resDB.val())
               navigation.replace('MainApp')
