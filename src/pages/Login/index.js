@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, ScrollView } from 'react-native';
 import { ILLogo } from '../../assets';
-import { Input, Button, Link, Gap, Loading } from '../../components';
+import { Input, Button, Link, Gap } from '../../components';
 import { colors, fonts, useForm, storeData } from '../../utils';
 import { FireBase } from '../../config';
 import { showMessage } from 'react-native-flash-message';
+import  { useDispatch } from 'react-redux';
 
 const Login = ({ navigation }) => {
   const [form, setForm] = useForm({ email: '', password: '' })
-  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
 
   const login = () => {
-    setLoading(true)
+    dispatch({ type: 'SET_LOADING', value: true })
     FireBase.auth()
       .signInWithEmailAndPassword(form.email, form.password)
       .then(res => {
-        setLoading(false)
+        dispatch({ type: 'SET_LOADING', value: false })
         FireBase.database()
           .ref(`users/${res.user.uid}/`)
           .once('value')
@@ -27,7 +28,7 @@ const Login = ({ navigation }) => {
           })
       })
       .catch(err => {
-        setLoading(false)
+        dispatch({ type: 'SET_LOADING', value: false })
         showMessage({
           message: err.message,
           type: 'default',
@@ -66,7 +67,6 @@ const Login = ({ navigation }) => {
           onPress={() => navigation.navigate('Register')}
         />
       </ScrollView>
-      {loading && <Loading />}
     </>
   )
 }
