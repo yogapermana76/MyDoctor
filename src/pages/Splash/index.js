@@ -1,22 +1,25 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {ILLogo} from '../../assets';
+import React, { useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { ILLogo } from '../../assets';
 import { colors } from '../../utils';
 import { FireBase } from '../../config';
 
-const Splash = ({navigation}) => {
+const Splash = ({ navigation }) => {
   useEffect(() => {
-    setTimeout(() => {
-      FireBase.auth()
-        .onAuthStateChanged(user => {
+    const unsubscribe = FireBase.auth()
+      .onAuthStateChanged(user => {
+        setTimeout(() => {
           if (user) {
             navigation.replace('MainApp')
           } else {
             navigation.replace('GetStarted')
           }
-        })
-    }, 3000)
+        }, 3000)
+      })
+    
+    return () => unsubscribe()
   }, [navigation])
+
   return (
     <View style={styles.page}>
       <ILLogo />
