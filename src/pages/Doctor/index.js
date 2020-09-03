@@ -91,7 +91,7 @@ const Doctor = ({navigation}) => {
                 name={item.fullName}
                 desc={item.category}
                 avatar={{ uri: item.photo }}
-                onPress={() => navigation.navigate('DoctorProfile')}
+                onPress={() => navigation.navigate('DoctorProfile', item)}
               />
             ))}
             <Text style={styles.sectionLabel}>Good News</Text>
