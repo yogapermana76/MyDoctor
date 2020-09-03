@@ -1,11 +1,48 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { HomeProfile, DoctorCategory, RatedDoctor, NewsItem, Gap } from '../../components'
-import { fonts, colors } from '../../utils'
+import { fonts, colors, showError } from '../../utils'
 import { ScrollView } from 'react-native-gesture-handler'
-import { JSONCategoryDoctor, DummyDoctor1 } from '../../assets'
+import { DummyDoctor1 } from '../../assets'
+import { FireBase } from '../../config'
 
 const Doctor = ({navigation}) => {
+  const [news, setNews] = useState([])
+  const [categoryDoctor, setCategoryDoctor] = useState([])
+
+  useEffect(() => {
+    getCategoryDoctor()
+    getNews()
+  }, [])
+
+  const getCategoryDoctor = () => {
+    FireBase.database()
+      .ref('category_doctor/')
+      .once('value')
+      .then(res => {
+        if (res.val()) {
+          setCategoryDoctor(res.val())
+        }
+      })
+      .catch(err => {
+        showError(err.message)
+      })
+  }
+
+  const getNews = () => {
+    FireBase.database()
+      .ref('news/')
+      .once('value')
+      .then(res => {
+        if (res.val()) {
+          setNews(res.val())
+        }
+      })
+      .catch(err => {
+        showError(err.message)
+      })
+  }
+
   return (
     <View style={styles.page}>
       <View style={styles.content}>
@@ -19,7 +56,7 @@ const Doctor = ({navigation}) => {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} >
               <View style={styles.category}>
                 <Gap width={32} />
-                {JSONCategoryDoctor.data.map(item => (
+                {categoryDoctor.map(item => (
                   <DoctorCategory
                     key={item.id}
                     category={item.category}
@@ -52,9 +89,14 @@ const Doctor = ({navigation}) => {
             />
             <Text style={styles.sectionLabel}>Good News</Text>
           </View>
-          <NewsItem />
-          <NewsItem />
-          <NewsItem />
+          {news.map(item => (
+            <NewsItem
+              key={item.id}
+              title={item.title}
+              date={item.date}
+              image={item.image}
+            />
+          ))}
           <Gap height={30} />
         </ScrollView>
       </View>
