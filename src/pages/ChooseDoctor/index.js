@@ -1,48 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Header, List } from '../../components'
-import { DummyDoctor1 } from '../../assets'
-import { colors } from '../../utils'
+import { colors, showError } from '../../utils'
+import { FireBase } from '../../config'
 
-const ChooseDoctor = ({navigation}) => {
+const ChooseDoctor = ({navigation, route}) => {
+  const itemCategory = route.params
+  const [doctors, setDoctors] = useState([])
+
+  useEffect(() => {
+    callDoctorByCategory()
+  }, [])
+
+  const callDoctorByCategory = () => {
+    FireBase.database()
+      .ref('doctors')
+      .orderByChild('category')
+      .equalTo(itemCategory.category)
+      .once('value')
+      .then(res => {
+        if (res.val()) {
+          const data = Object.keys(res.val()).map(id => ({ id, data: res.val()[id] }))
+          setDoctors(data)
+        }
+      })
+      .catch(err => {
+        showError(err.message)
+      })
+  }
+
   return (
     <View style={styles.page}>
       <Header
         type="dark"
-        title="Pilih Dokter Anak"
+        title={`Pilih ${itemCategory.category}`}
         onPress={() => navigation.goBack()}
       />
-      <List
-        type="next"
-        profile={DummyDoctor1}
-        name="Alexander Jannie"
-        desc="Male"
-        onPress={() => navigation.navigate('Chatting')}
-      />
-      <List
-        type="next"
-        profile={DummyDoctor1}
-        name="Alexander Jannie"
-        desc="Male"
-      />
-      <List
-        type="next"
-        profile={DummyDoctor1}
-        name="Alexander Jannie"
-        desc="Male"
-      />
-      <List
-        type="next"
-        profile={DummyDoctor1}
-        name="Alexander Jannie"
-        desc="Male"
-      />
-      <List
-        type="next"
-        profile={DummyDoctor1}
-        name="Alexander Jannie"
-        desc="Male"
-      />
+      {doctors.map(doctor => (
+        <List
+          key={doctor.id}
+          type="next"
+          profile={{ uri: doctor.data.photo }}
+          name={doctor.data.fullName}
+          desc={doctor.data.gender}
+          onPress={() => navigation.navigate('DoctorProfile', doctor)}
+        />
+      ))}
     </View>
   )
 }

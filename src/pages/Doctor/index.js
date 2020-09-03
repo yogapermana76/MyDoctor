@@ -22,7 +22,8 @@ const Doctor = ({navigation}) => {
       .once('value')
       .then(res => {
         if (res.val()) {
-          setCategoryDoctor(res.val())
+          const data = res.val().filter(el => el !== null)
+          setCategoryDoctor(data)
         }
       })
       .catch(err => {
@@ -37,8 +38,10 @@ const Doctor = ({navigation}) => {
       .limitToLast(3)
       .once('value')
       .then(res => {
-        const data = Object.values(res.val())
-        setDoctors(data)
+        if (res.val()) {
+          const data = Object.keys(res.val()).map(id => ({ id, data: res.val()[id] }))
+          setDoctors(data)
+        }
       })
       .catch(err => {
         showError(err.message)
@@ -51,7 +54,8 @@ const Doctor = ({navigation}) => {
       .once('value')
       .then(res => {
         if (res.val()) {
-          setNews(res.val())
+          const data = res.val().filter(el => el !== null)
+          setNews(data)
         }
       })
       .catch(err => {
@@ -76,7 +80,7 @@ const Doctor = ({navigation}) => {
                   <DoctorCategory
                     key={item.id}
                     category={item.category}
-                    onPress={() => navigation.navigate('ChooseDoctor')}
+                    onPress={() => navigation.navigate('ChooseDoctor', item)}
                   />
                 ))}
                 <Gap width={22} />
@@ -87,10 +91,10 @@ const Doctor = ({navigation}) => {
             <Text style={styles.sectionLabel}>Top Rated Doctors</Text>
             {doctors.map(item => (
               <RatedDoctor
-                key={item.uid}
-                name={item.fullName}
-                desc={item.category}
-                avatar={{ uri: item.photo }}
+                key={item.id}
+                name={item.data.fullName}
+                desc={item.data.category}
+                avatar={{ uri: item.data.photo }}
                 onPress={() => navigation.navigate('DoctorProfile', item)}
               />
             ))}
