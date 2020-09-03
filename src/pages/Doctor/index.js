@@ -3,15 +3,16 @@ import { StyleSheet, Text, View } from 'react-native'
 import { HomeProfile, DoctorCategory, RatedDoctor, NewsItem, Gap } from '../../components'
 import { fonts, colors, showError } from '../../utils'
 import { ScrollView } from 'react-native-gesture-handler'
-import { DummyDoctor1 } from '../../assets'
 import { FireBase } from '../../config'
 
 const Doctor = ({navigation}) => {
   const [news, setNews] = useState([])
+  const [doctors, setDoctors] = useState([])
   const [categoryDoctor, setCategoryDoctor] = useState([])
 
   useEffect(() => {
     getCategoryDoctor()
+    getTopRatedDoctors()
     getNews()
   }, [])
 
@@ -23,6 +24,21 @@ const Doctor = ({navigation}) => {
         if (res.val()) {
           setCategoryDoctor(res.val())
         }
+      })
+      .catch(err => {
+        showError(err.message)
+      })
+  }
+
+  const getTopRatedDoctors = () => {
+    FireBase.database()
+      .ref('doctors/')
+      .orderByChild('rate')
+      .limitToLast(3)
+      .once('value')
+      .then(res => {
+        const data = Object.values(res.val())
+        setDoctors(data)
       })
       .catch(err => {
         showError(err.message)
@@ -69,24 +85,15 @@ const Doctor = ({navigation}) => {
           </View>
           <View style={styles.wrapperSection}>
             <Text style={styles.sectionLabel}>Top Rated Doctors</Text>
-            <RatedDoctor
-              name="Alexa Rachel"
-              desc="Pediatrician"
-              avatar={DummyDoctor1}
-              onPress={() => navigation.navigate('DoctorProfile')}
-            />
-            <RatedDoctor
-              name="Alexa Rachel"
-              desc="Pediatrician"
-              avatar={DummyDoctor1}
-              onPress={() => navigation.navigate('DoctorProfile')}
-            />
-            <RatedDoctor
-              name="Alexa Rachel"
-              desc="Pediatrician"
-              avatar={DummyDoctor1}
-              onPress={() => navigation.navigate('DoctorProfile')}
-            />
+            {doctors.map(item => (
+              <RatedDoctor
+                key={item.uid}
+                name={item.fullName}
+                desc={item.category}
+                avatar={{ uri: item.photo }}
+                onPress={() => navigation.navigate('DoctorProfile')}
+              />
+            ))}
             <Text style={styles.sectionLabel}>Good News</Text>
           </View>
           {news.map(item => (
