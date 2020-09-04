@@ -20,7 +20,14 @@ const ChooseDoctor = ({navigation, route}) => {
       .once('value')
       .then(res => {
         if (res.val()) {
-          const data = Object.keys(res.val()).map(id => ({ id, data: res.val()[id] }))
+          const oldData = res.val()
+          const data = []
+          Object.keys(oldData).map(key => {
+            data.push({
+              id: key,
+              ...oldData[key]
+            })
+          })
           setDoctors(data)
         }
       })
@@ -40,9 +47,9 @@ const ChooseDoctor = ({navigation, route}) => {
         <List
           key={doctor.id}
           type="next"
-          profile={{ uri: doctor.data.photo }}
-          name={doctor.data.fullName}
-          desc={doctor.data.gender}
+          profile={{ uri: doctor.photo }}
+          name={doctor.fullName}
+          desc={doctor.gender}
           onPress={() => navigation.navigate('DoctorProfile', doctor)}
         />
       ))}

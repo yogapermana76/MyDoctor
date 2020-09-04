@@ -9,14 +9,14 @@ const DoctorProfile = ({navigation, route}) => {
     <View style={styles.page}>
       <Header title="Doctor Profile" onPress={() => navigation.goBack()} />
       <Profile
-        name={dataDoctor.data.fullName}
-        desc={dataDoctor.data.category}
-        photo={{ uri: dataDoctor.data.photo }}
+        name={dataDoctor.fullName}
+        desc={dataDoctor.category}
+        photo={{ uri: dataDoctor.photo }}
       />
       <Gap height={10} />
-      <ProfileItem label="Alumnus" value={dataDoctor.data.university} />
-      <ProfileItem label="Tempat Praktik" value={dataDoctor.data.hospital_address} />
-      <ProfileItem label="No. STR" value={dataDoctor.data.str_number} />
+      <ProfileItem label="Alumnus" value={dataDoctor.university} />
+      <ProfileItem label="Tempat Praktik" value={dataDoctor.hospital_address} />
+      <ProfileItem label="No. STR" value={dataDoctor.str_number} />
       <View style={styles.action}>
         <Button
           title="Start Consultation"

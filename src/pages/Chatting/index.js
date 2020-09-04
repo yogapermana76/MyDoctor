@@ -13,11 +13,11 @@ const Chatting = ({navigation, route}) => {
   useEffect(() => {
     getDataUserFromLocal()
 
-    const chatID = `${user.uid}_${dataDoctor.data.uid}`
-    const urlFirebase = `chatting/${chatID}/allChat/`
+    const chatID = `${user.uid}_${dataDoctor.uid}`
+    const urlChatting = `chatting/${chatID}/allChat/`
 
     FireBase.database()
-      .ref(urlFirebase)
+      .ref(urlChatting)
       .on('value', (snapshot) => {
         if (snapshot.val()) {
           const dataSnapshot = snapshot.val()
@@ -30,7 +30,7 @@ const Chatting = ({navigation, route}) => {
             Object.keys(dataChat).map(itemChat => {
               newDataChat.push({
                 id: itemChat,
-                data: dataChat[itemChat]
+                ...dataChat[itemChat]
               })
             })
 
@@ -43,7 +43,7 @@ const Chatting = ({navigation, route}) => {
           setChatData(allDataChat)
         }
       })
-  }, [dataDoctor.data.uid, user.uid])
+  }, [dataDoctor.uid, user.uid])
 
   const getDataUserFromLocal = () => {
     getData('user').then(res => {
@@ -54,21 +54,45 @@ const Chatting = ({navigation, route}) => {
   const chatSend = () => {
     const today = new Date()
 
-    const data = {
+    const dataChat = {
       sendBy: user.uid,
       chatDate: today.getTime(),
       chatTime: getChatTime(today),
       chatContent
     }
 
-    const chatID = `${user.uid}_${dataDoctor.data.uid}`
+    const dataHistoryChatForUser = {
+      lastContentChat: chatContent,
+      lastChatDate: today.getTime(),
+      uidPartner: dataDoctor.uid
+    }
 
-    const urlFirebase = `chatting/${chatID}/allChat/${setDateChat(today)}`
+    const dataHistoryChatForDoctor = {
+      lastContentChat: chatContent,
+      lastChatDate: today.getTime(),
+      uidPartner: user.uid
+    }
+
+    const chatID = `${user.uid}_${dataDoctor.uid}`
+
+    const urlChatting = `chatting/${chatID}/allChat/${setDateChat(today)}`
+    const urlMessageUser = `messages/${user.uid}/${chatID}/`
+    const urlMessageDoctor = `messages/${dataDoctor.uid}/${chatID}`
 
     FireBase.database()
-      .ref(urlFirebase)
-      .push(data)
+      .ref(urlChatting)
+      .push(dataChat)
       .then(() => {
+        // set history for user
+        FireBase.database()
+          .ref(urlMessageUser)
+          .set(dataHistoryChatForUser)
+
+        // set history for doctor
+        FireBase.database()
+          .ref(urlMessageDoctor)
+          .set(dataHistoryChatForDoctor)
+
         setChatContent('')
       })
       .catch(err => {
@@ -80,9 +104,9 @@ const Chatting = ({navigation, route}) => {
     <View style={styles.page}>
       <Header
         type="dark-profile"
-        title={dataDoctor.data.fullName}
-        photo={{ uri: dataDoctor.data.photo }}
-        desc={dataDoctor.data.profession}
+        title={dataDoctor.fullName}
+        photo={{ uri: dataDoctor.photo }}
+        desc={dataDoctor.profession}
         onPress={() => navigation.goBack()}
       />
       <View style={styles.content}>
@@ -91,13 +115,13 @@ const Chatting = ({navigation, route}) => {
             <View key={chat.id}>
               <Text style={styles.chatDate}>{chat.id}</Text>
               {chat.data.map(itemChat => {
-                const isMe = itemChat.data.sendBy === user.uid
+                const isMe = itemChat.sendBy === user.uid
                 return (
                   <ChatItem
                     key={itemChat.id}
                     isMe={isMe}
-                    text={itemChat.data.chatContent}
-                    time={itemChat.data.chatTime}
+                    text={itemChat.chatContent}
+                    time={itemChat.chatTime}
                     photo={isMe ? null : { uri: user.photo}}
                   />
                 )

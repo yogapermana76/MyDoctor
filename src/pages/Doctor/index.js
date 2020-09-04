@@ -39,7 +39,14 @@ const Doctor = ({navigation}) => {
       .once('value')
       .then(res => {
         if (res.val()) {
-          const data = Object.keys(res.val()).map(id => ({ id, data: res.val()[id] }))
+          const oldData = res.val()
+          const data = []
+          Object.keys(oldData).map(key => {
+            data.push({
+              id: key,
+              ...oldData[key]
+            })
+          })
           setDoctors(data)
         }
       })
@@ -92,9 +99,9 @@ const Doctor = ({navigation}) => {
             {doctors.map(item => (
               <RatedDoctor
                 key={item.id}
-                name={item.data.fullName}
-                desc={item.data.category}
-                avatar={{ uri: item.data.photo }}
+                name={item.fullName}
+                desc={item.category}
+                avatar={{ uri: item.photo }}
                 onPress={() => navigation.navigate('DoctorProfile', item)}
               />
             ))}
