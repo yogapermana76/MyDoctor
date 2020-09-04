@@ -2,13 +2,13 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { colors, fonts } from '../../../utils'
 
-const IsMe = () => {
+const IsMe = ({text, time}) => {
   return (
     <View style={styles.container}>
       <View style={styles.chatContent}>
-        <Text style={styles.text}>Chat Item Component</Text>
+        <Text style={styles.text}>{text}</Text>
       </View>
-      <Text style={styles.date}>4.50 AM</Text>
+      <Text style={styles.date}>{time}</Text>
     </View>
   )
 }

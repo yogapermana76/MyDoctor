@@ -2,11 +2,11 @@ import React from 'react'
 import IsMe from './IsMe'
 import Other from './Other'
 
-const ChatItem = ({isMe}) => {
+const ChatItem = ({isMe, text, time, photo}) => {
   if (isMe) {
-    return <IsMe />
+    return <IsMe text={text} time={time} />
   }
-  return <Other />
+  return <Other text={text} time={time} photo={photo} />
 }
 
 export default ChatItem

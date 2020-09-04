@@ -2,9 +2,8 @@ import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { colors, fonts } from '../../../utils'
 import { Button } from '../../atoms'
-import { DummyDoctor1 } from '../../../assets'
 
-const DarkProfile = ({onPress}) => {
+const DarkProfile = ({onPress, title, desc, photo}) => {
   return (
     <View style={styles.container}>
       <Button
@@ -13,10 +12,10 @@ const DarkProfile = ({onPress}) => {
         onPress={onPress}
       />
       <View style={styles.content}>
-        <Text style={styles.name}>Nairobi Putri Hayza</Text>
-        <Text style={styles.desc}>Dokter Anak</Text>
+        <Text style={styles.name}>{title}</Text>
+        <Text style={styles.desc}>{desc}</Text>
       </View>
-      <Image source={DummyDoctor1} style={styles.avatar} />
+      <Image source={photo} style={styles.avatar} />
     </View>
   )
 }
@@ -53,6 +52,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.normal,
     marginTop: 6,
     textAlign: 'center',
-    color: colors.text.subTitle
+    color: colors.text.subTitle,
+    textTransform: 'capitalize'
   }
 })
